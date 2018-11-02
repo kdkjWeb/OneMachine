@@ -12,9 +12,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 
 //引入axios封装请求并使用
- import Server from './server/index';
-Vue.prototype.$get = Server.get;
+import Server from './server/index';
 Vue.prototype.$post = Server.post;
+Vue.prototype.$get = Server.get;
+
 
 //引入store
 import store from './store/index'

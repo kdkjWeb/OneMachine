@@ -4,19 +4,25 @@
  * @Description:  封装axios请求
  */
 
-import Vue from 'vue';
 import Axios from 'axios';
-import {Message,Loading} from 'element-ui';
+import store from "../store/index";
 
+//配置API接口地址
+const API_ROOT = process.env.API_ROOT;
 
-Axios.defaults.baseURL = 'http://192.168.20.180:8088/';
+Axios.defaults.baseURL = API_ROOT;
 Axios.defaults.timeout = 5000;
 Axios.defaults.withCredentials = true;
 
 //http request 拦截器
 Axios.interceptors.request.use(
   config =>{
+    if(store.state.token){   //判断token是否存在，如果存在，则在所有请求头上面添加token
 
+      //   config.headers.Authorization = `token ${store.state.token}`;
+
+      config.headers['token'] = store.state.token;  //请求头设置token
+    }
     return config;
   },err=>{
     return Promise.reject(err)
@@ -26,7 +32,6 @@ Axios.interceptors.request.use(
 //http response 拦截器
 Axios.interceptors.response.use(
   response=>{
-
     return response;
   },err=>{
     if(err.response){
@@ -38,43 +43,44 @@ Axios.interceptors.response.use(
   }
   )
 
-export default {
+  export default {
 
-  /**
-   * 封装get方法
-   * @param url
-   * @param params
-   * @returns {Promise<any>}
-   */
-
-  get: (url,params = {})=>{
-    return new Promise((resolve,reject)=>{
-      Axios.get(url,{
-        params: params
-      }).then(res=>{
-        resolve(res.data)
-      }).catch(err=>{
-        reject(err)
+    /**
+     * 封装get方法
+     * @param url
+     * @param params
+     * @returns {Promise<any>}
+     */
+  
+  
+  
+    get: (url,params = {})=>{
+      return new Promise((resolve,reject)=>{
+        Axios.get(url,{
+          params: params
+        }).then(res=>{
+          resolve(res.data)
+        }).catch(err=>{
+          reject(err)
+        })
       })
-    })
-  },
-
-  /**
-   * 封装post方法
-   * @param url
-   * @param data
-   * @returns {Promise<any>}
-   */
-
-  post: (url,data = {})=>{
-    return new Promise((resolve,reject)=>{
-      Axios.post(url,data).then(res=>{
-        resolve(res.data)
-      }).catch(err=>{
-        reject(err)
+    },
+  
+    /**
+     * 封装post方法
+     * @param url
+     * @param data
+     * @returns {Promise<any>}
+     */
+  
+    post: (url,data = {})=>{
+      return new Promise((resolve,reject)=>{
+        Axios.post(url,data).then(res=>{
+          resolve(res.data)
+        }).catch(err=>{
+          reject(err)
+        })
       })
-    })
+    }
+  
   }
-
-
-}
