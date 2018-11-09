@@ -3,7 +3,7 @@
   <div :class="collapse ? 'sidebar_collapse':'sidebar'">
     <!-- start菜单栏是否折叠按钮 -->
     <div class="slide">
-      <span class="iconfont icon-webicon03-copy" @click="colapaseChange"></span>
+      <span class="iconfont icon-home_shousuo_icon" @click="colapaseChange"></span>
     </div>
     <!-- end菜单栏是否折叠按钮 -->
 
@@ -40,9 +40,67 @@
         collapse: false,   //菜单栏是否折叠
         routerItem: [
           {
-            icon: 'icon-shangsheng4',
+            icon: 'icon-dengluyonghuming',
             index: 'index',
-            title: '运营统计'
+            title: '平台账户管理',
+            subs: [
+              {
+                index: 'using',
+                title: '使用中管理员'
+              },{
+                index: 'expired',
+                title: '已过期管理员'
+              }
+            ]
+          },{
+            icon: 'icon-fuwuzhuce',
+            index: 'index1',
+            title: '注册管理',
+            subs: [
+              {
+                index: 'student',
+                title: '学生注册'
+              },{
+                index: 'visitor',
+                title: '访客登记'
+              }
+            ]
+          },{
+            icon: 'icon-guanggaopai',
+            index: 'index2',
+            title: '广告管理',
+            subs: [
+              {
+                index: 'admachine',
+                title: '广告机管理'
+              },{
+                index: 'adplay',
+                title: '广告播放设置'
+              }
+            ]
+          },{
+            icon: 'icon-xitongrizhi',
+            index: 'index3',
+            title: '系统日志',
+            subs: [
+              {
+                index: 'platform',
+                title: '平台操作日志'
+              },{
+                index: 'machine',
+                title: '注册机操作日志'
+              }
+            ]
+          },{
+            icon: 'icon-shezhi3',
+            index: 'index4',
+            title: '参数设置',
+            subs: [
+              {
+                index: 'configuration',
+                title: '基本配置'
+              }
+            ]
           }
         ]
       }

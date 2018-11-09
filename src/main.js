@@ -21,6 +21,11 @@ Vue.prototype.$get = Server.get;
 import store from './store/index'
 
 
+//注册全局组件
+import TopNav from "./components/TopNav";
+
+Vue.component('TopNav',TopNav);
+
 //路由拦截
 /*router.beforeEach((to,from,next)=>{
   if(to.path === '/login'){

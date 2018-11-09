@@ -1,0 +1,17 @@
+/**
+ * @author 杨勇
+ * @date 18/11/8
+ * @Description:
+*/
+
+.el-dialog__wrapper .el-dialog__body{
+  padding: 10px 20px 0;
+}
+.page{
+  text-align: right;
+  margin: 10px 0 40px;
+}
+.table{
+  margin-top: 20px;
+}
+

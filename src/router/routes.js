@@ -18,7 +18,47 @@ export default {
           path: '/index',
           name: 'index',
           component: resolve => require(['@/pages/Index.vue'],resolve)
-        },
+        },{
+          path: '/using',
+          name: 'using',
+          component: resolve => require(['@/pages/account/using'],resolve)
+        },{
+          path: '/expired',
+          name: 'expired',
+          component: resolve => require(['@/pages/account/expired'],resolve)
+        },{
+          path: '/student',
+          name: 'student',
+          component: resolve => require(['@/pages/register/student'],resolve)
+        },{
+          path: '/visitor',
+          name: 'visitor',
+          component: resolve => require(['@/pages/register/visitor'],resolve)
+        },{
+          path: '/machine',
+          name: 'machine',
+          component: resolve => require(['@/pages/log/machine'],resolve)
+        },{
+          path: '/platform',
+          name: 'platform',
+          component: resolve => require(['@/pages/log/platform'],resolve)
+        },{
+          path: '/configuration',
+          name: 'configuration',
+          component: resolve => require(['@/pages/setting/configuration'],resolve)
+        },{
+          path: '/admachine',
+          name: 'admachine',
+          component: resolve => require(['@/pages/ad/admachine'],resolve)
+        },{
+          path: '/adplay',
+          name: 'adplay',
+          component: resolve => require(['@/pages/ad/adplay'],resolve)
+        },{
+          path: '/setimg',
+          name: 'setimg',
+          component: resolve => require(['@/pages/ad/setimg'],resolve)
+        }
       ]
     },{
       path: '/login',

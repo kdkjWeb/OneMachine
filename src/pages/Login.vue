@@ -18,11 +18,11 @@
             </div>
           </transition>
           <div class="row">
-            <span class="iconfont icon-yonghuming icon"></span>
+            <span class="iconfont icon-dengluyonghuming icon"></span>
             <input v-model="userInfo.userName" class="row_input" type="text" placeholder="请输入您的用户名">
           </div>
           <div class="row">
-            <span class="iconfont icon-icon icon"></span>
+            <span class="iconfont icon-mima1 icon"></span>
             <input v-model="userInfo.userPas" class="row_input" type="password" placeholder="请输入您的密码">
           </div>
           <div class="row">
