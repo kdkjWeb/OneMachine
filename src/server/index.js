@@ -35,7 +35,7 @@ Axios.interceptors.response.use(
     return response;
   },err=>{
     if(err.response){
-      switch (err.response.status) {
+      switch (err.response.status === 401) {
 
       }
     }

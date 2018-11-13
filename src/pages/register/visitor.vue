@@ -10,10 +10,10 @@
         <div class="top_nav_left">
           <el-form :inline="true" :model="formInline" class="demo-form-inline" size="mini">
             <el-form-item>
-              <el-input clearable v-model="formInline.txt" placeholder="请输入姓名、身份证号"></el-input>
+              <el-input clearable v-model="formInline.txt" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button size="mini" type="primary">搜索</el-button>
+              <el-button size="mini" type="primary" @click="search">搜索</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -39,6 +39,7 @@
             :key="index"
             :prop="item.prop"
             :label="item.label"
+            :width="item.width"
             align="center"
             header-align="center"
             :show-overflow-tooltip="true"
@@ -46,7 +47,8 @@
           </el-table-column>
           <el-table-column
             label="注册状态"
-            align="center">
+            align="center"
+            width="100">
             <template slot-scope="scope">
               <el-tag type="danger" v-if="scope.row.status == 1">在线</el-tag>
               <el-tag type="success" v-if="scope.row.status == 0">离线</el-tag>
@@ -58,11 +60,11 @@
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                @click="handleEdit(scope.row)">编辑</el-button>
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -91,38 +93,42 @@
         :visible.sync="dialogVisible"
         width="30%">
         <div>
-          <el-form ref="form" :model="form" label-width="110px" size="mini">
-            <el-form-item label="访客姓名">
-              <el-input clearable v-model="form.userName" placeholder="请输入访客姓名"></el-input>
+          <el-form ref="form" :rules="rules" :model="form" label-width="120px" size="mini">
+            <el-form-item label="访客姓名" prop="visitorName">
+              <el-input clearable v-model="form.visitorName" placeholder="请输入访客姓名"></el-input>
             </el-form-item>
-            <el-form-item label="访客身份证号">
-              <el-input clearable v-model="form.idCard" placeholder="请输入访客身份证号"></el-input>
+            <el-form-item label="访客身份证号" prop="cardId">
+              <el-input clearable v-model="form.cardId" placeholder="请输入访客身份证号"></el-input>
             </el-form-item>
-            <el-form-item label="到访开始时间">
+            <el-form-item label="到访开始时间" prop="arriveTime">
               <el-date-picker
-                v-model="form.idCard"
+                v-model="form.arriveTime"
                 type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :picker-options="pickerOptionsS"
                 placeholder="选择日期时间">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="到访结束时间">
+            <el-form-item label="到访结束时间" prop="arriveEndTime">
               <el-date-picker
-                v-model="form.idCard"
+                v-model="form.arriveEndTime"
                 type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :picker-options="pickerOptionsE"
                 placeholder="选择日期时间">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="被访者姓名">
-              <el-input clearable v-model="form.userName" placeholder="请输入被访者姓名"></el-input>
+            <el-form-item label="被访者姓名" prop="visitUserName">
+              <el-input clearable v-model="form.visitUserName" placeholder="请输入被访者姓名"></el-input>
             </el-form-item>
-            <el-form-item label="被访者身份证号">
-              <el-input clearable v-model="form.idCard" placeholder="请输入被访者身份证号"></el-input>
+            <el-form-item label="被访者身份证号" prop="visitCardId">
+              <el-input clearable v-model="form.visitCardId" placeholder="请输入被访者身份证号"></el-input>
             </el-form-item>
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button size="mini" @click="cancel">取 消</el-button>
-          <el-button size="mini" type="primary" @click="comfirm">确 定</el-button>
+          <el-button size="mini" type="primary" @click="comfirm('form')">确 定</el-button>
         </span>
       </el-dialog>
       <!--end  单个录入弹出框-->
@@ -145,57 +151,172 @@
               txt: ''
             },
             tableList: [   //表格的头部配置
-              {prop: 'userName', label: '访客姓名'},
-              {prop: 'schoolName', label: '访客身份证号'},
-              {prop: 'registerAddress', label: '到访时间'},
-              {prop: 'macAddress', label: '到访结束时间'},
-              {prop: 'leader', label: '被访者姓名'},
-              {prop: 'leaderPhone', label: '被访者身份证号'},
-              {prop: 'authStartTime', label: '录入时间'},
+              {prop: 'visitorName', label: '访客姓名',width: '120'},
+              {prop: 'cardId', label: '访客身份证号',width: '120'},
+              {prop: 'arriveTime', label: '到访时间',width: '160'},
+              {prop: 'arriveEndTime', label: '到访结束时间',width: '160'},
+              {prop: 'visitUserName', label: '被访者姓名',width: '120'},
+              {prop: 'visitCardId', label: '被访者身份证号',width: '120'},
+              {prop: 'modifyTime', label: '录入时间',width: '160'},
             ],
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
             pageSize: 10,   //每页显示多少条
-            total: 100,   //总共多少条数据
+            total: null,   //总共多少条数据
             dialogVisible: false,
             form: {
-              userName: '',   //学生姓名
-              idCard: ''    //身份证号码
-            }
+              visitorName: '',   //访客姓名
+              cardId: '',    //身份证号码
+              arriveTime: '',
+              arriveEndTime: '',
+              visitUserName: '',   //被访者姓名
+              visitCardId: ''
+            },
+            visitorId: '',   //通过id判断当前是修改还是新增
+            rules: {
+              visitorName: [
+                { required: true, message: '请输入访客姓名', trigger: 'blur' },
+                { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
+              ],
+              cardId: [
+                { required: true, message: '请输入访客身份证号码', trigger: 'blur' },
+                { min: 1, max: 18, message: '长度在 1 到 18 个字符', trigger: 'blur' }
+              ],
+              arriveTime: [
+                { required: true, message: '请输入到访开始时间', trigger: 'blur' },
+              ],
+              arriveEndTime: [
+                { required: true, message: '请输入到访结束时间', trigger: 'blur' },
+              ],
+              visitUserName: [
+                { required: true, message: '请输入被访者姓名', trigger: 'blur' },
+                { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
+              ],
+              visitCardId: [
+                { required: true, message: '请输入被访者身份证号码', trigger: 'blur' },
+                { min: 1, max: 18, message: '长度在 1 到 18 个字符', trigger: 'blur' }
+              ]
+            },
+            pickerOptionsS: {
+              disabledDate(time) {
+                return time.getTime() < Date.now() - 8.64e7;
+              }
+            },
+            pickerOptionsE: {
+              disabledDate: (time) => {
+               return time.getTime() > this.form.arriveTime || time.getTime() < Date.now() - 8.64e7;
+              }
+            },
           }
         },
         mounted(){
           window.addEventListener('resize', ()=>{
             this.height = window.innerHeight - 240;
           })
+
+          //获取所有访客列表
+          this.getVisitorList()
         },
         created(){
           this.height = window.innerHeight - 240;
         },
         methods: {
+
+          //获取所有访客的列表
+          getVisitorList(pageSize,pageNum){
+            this.$get('gateVisitor/getGateVisitorFormList',{
+              visitorName: this.formInline.txt ? this.formInline.txt : null,
+              pageSize: pageSize ? pageSize : 10,
+              pageNum: pageNum ? pageNum : 1
+            }).then(res=>{
+              if(res.code == 0){
+                this.tableData = res.data.content;
+                this.total = res.data.pageinfo.totalElements > 0 ? res.data.pageinfo.totalElements : 0
+              }
+            })
+          },
+
+          //搜索
+          search(){
+            this.getVisitorList()
+          },
+
           //点击单个录入
           entry(){
             this.dialogVisible = true;
+            this.visitorId = '';
+
+            Object.keys(this.form).forEach((item,index)=>{
+              this.form[item] = '';
+            })
+
           },
 
           //编辑
-          handleEdit(){
+          handleEdit(row){
+            this.dialogVisible = true;
+            this.visitorId = row.id;
 
+            this.$post('gateVisitor/getGateVisitor',{
+              id: row.id
+            }).then(res=>{
+              if(res.code === 0){
+
+                //将请求回来的单个数据回显到输入框
+                Object.keys(this.form).forEach((item,index)=>{
+
+                  if(res.data[item]){
+                    this.form[item] = res.data[item];
+                  }else{
+                    this.form[item] = ''
+                  }
+
+                })
+              }
+            })
           },
 
           //删除
-          handleDelete(){
+          handleDelete(row){
+
+            this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+
+              this.$post('gateVisitor/delGateVisitor',{
+                id: row.id
+              }).then(res=>{
+
+                if(res.code === 0){
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.getVisitorList()
+                }
+
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
 
           },
 
           //每页显示多少条数据
           handleSizeChange(val) {
             this.pageSize = val;
+            this.getVisitorList(val,this.currentPage);
           },
 
           //当前第几页
           handleCurrentChange(val) {
             this.currentPage = val;
+            this.getVisitorList(this.pageSize,val);
           },
 
           //点击弹出框取消按钮
@@ -204,8 +325,38 @@
           },
 
           //点击弹出框的确认按钮
-          comfirm(){
-            this.dialogVisible = false;
+          comfirm(formName){
+            //验证表单填写的数据是否合法，合法将新增数据，反之提示
+            this.$refs[formName].validate((valid) => {
+              if (valid) {
+
+                let url = this.visitorId ? 'gateVisitor/updateGateVisitor' : 'gateVisitor/insertVisitor';
+
+                this.$post(url,{
+                  visitorName: this.form.visitorName,   //访客姓名
+                  cardId: this.form.cardId,    //身份证号码
+                  arriveTime: this.form.arriveTime,
+                  arriveEndTime: this.form.arriveEndTime,
+                  visitUserName: this.form.visitUserName,   //被访者姓名
+                  visitCardId: this.form.visitCardId,
+                  id: this.visitorId ? this.visitorId : null
+                }).then(res=>{
+                  if(res.code === 0){
+                    let msg = this.visitorId ? '修改成功' : '录入成功'
+                    this.$message({
+                      type: 'success',
+                      message: msg
+                    });
+
+                    this.dialogVisible = false;
+
+                    this.getVisitorList()
+                  }
+                })
+              } else {
+                return false;
+              }
+            });
           }
         }
     }

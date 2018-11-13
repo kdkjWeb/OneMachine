@@ -12,8 +12,7 @@
               size="mini"
               v-model="formInline.startTime"
               type="date"
-              value-format="yyyy-MM-dd"
-              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
@@ -22,23 +21,18 @@
               size="mini"
               v-model="formInline.endTime"
               type="date"
-              value-format="yyyy-MM-dd"
-              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptionsE"
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="注册机选择">
-            <el-select clearable v-model="formInline.type" filterable placeholder="请选择注册机">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+
+            <el-input clearable v-model="formInline.type" placeholder="请输入注册机"></el-input>
+
           </el-form-item>
           <el-form-item>
-            <el-button size="mini" type="primary">搜索</el-button>
+            <el-button size="mini" type="primary" @click="search">搜索</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -110,40 +104,32 @@
               endTime: '',   //结束时间
               type: ''   //类型
             },
-            options: [{
-              value: '选项1',
-              label: '黄金糕'
-            }, {
-              value: '选项2',
-              label: '双皮奶'
-            }, {
-              value: '选项3',
-              label: '蚵仔煎'
-            }, {
-              value: '选项4',
-              label: '龙须面'
-            }, {
-              value: '选项5',
-              label: '北京烤鸭'
-            }],
             tableList: [   //表格的头部配置
-              {prop: 'userName', label: '注册机地址'},
-              {prop: 'schoolName', label: 'MAC地址'},
-              {prop: 'registerAddress', label: '操作方式'},
-              {prop: 'macAddress', label: '操作人员级别'},
-              {prop: 'leader', label: '操作人'},
-              {prop: 'leader', label: '操作对象'},
-              {prop: 'leader', label: '省份证号码'},
-              {prop: 'leader', label: '操作时间'},
-              {prop: 'leader', label: '操作结果'},
+              {prop: 'macAddress', label: 'MAC地址'},
+              {prop: 'operation', label: '操作方式'},
+              // {prop: 'macAddress', label: '操作人员级别'},
+              {prop: 'operationUser', label: '操作人'},
+              {prop: 'operationObject', label: '操作对象'},
+              {prop: 'idCard', label: '身份证号码'},
+              {prop: 'operationTime', label: '操作时间'},
+              {prop: 'operationResultStr', label: '操作结果'},
             ],
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
             pageSize: 10,   //每页显示多少条
-            total: 100,   //总共多少条数据
+            total: null,   //总共多少条数据
+            pickerOptionsE: {
+              disabledDate: (time) => {
+                return time.getTime() < new Date(this.formInline.startTime);
+              }
+            },
           }
         },
         mounted(){
+
+          //获取注册机操作日志
+          this.getMachineLogList();
+
           window.addEventListener('resize', ()=>{
             this.height = window.innerHeight - 240;
           })
@@ -152,14 +138,40 @@
           this.height = window.innerHeight - 240;
         },
         methods: {
+
+          //获取注册机操作日志列表
+          getMachineLogList(pageSize,pageNum){
+            this.$post('gateLog/getGateFormList',{
+              pageSize: pageSize ? pageSize : 10,
+              pageNum: pageNum ? pageNum : 1,
+              beginTime: this.formInline.startTime ? this.formInline.startTime : null,
+              endTime: this.formInline.endTime ? this.formInline.endTime : null,
+              macAddress: this.formInline.type ? this.formInline.type : null
+            }).then(res=>{
+              if(res.code === 0){
+                this.tableData = res.data.content;
+                this.total = res.data.pageinfo.totalElements > 0 ? res.data.pageinfo.totalElements : 0
+              }
+
+            })
+          },
+
+          //搜索
+          search(){
+            this.getMachineLogList()
+          },
+
+
           //每页显示多少条数据
           handleSizeChange(val) {
             this.pageSize = val;
+            this.getMachineLogList(val,this.currentPage);
           },
 
           //当前第几页
           handleCurrentChange(val) {
             this.currentPage = val;
+            this.getMachineLogList(this.pageSize,val);
           },
 
           //设置表格索引序号

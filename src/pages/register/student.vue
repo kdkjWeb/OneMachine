@@ -9,10 +9,10 @@
         <div class="top_nav_left">
           <el-form :inline="true" :model="formInline" class="demo-form-inline" size="mini">
             <el-form-item>
-              <el-input clearable v-model="formInline.txt" placeholder="请输入姓名、身份证号"></el-input>
+              <el-input clearable v-model="formInline.txt" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button size="mini" type="primary">搜索</el-button>
+              <el-button size="mini" type="primary" @click="search">搜索</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -24,6 +24,7 @@
             <el-upload
               class="upload-demo"
               action="https://jsonplaceholder.typicode.com/posts/"
+              :before-upload="beforeAvatarUpload"
             >
               <el-button size="mini" type="primary">批量导入</el-button>
             </el-upload>
@@ -46,18 +47,18 @@
             label="照片"
             align="center">
             <template slot-scope="scope">
-              <img v-if="scope.row.authorityLevel == 0" src="" alt="学生照片" width="50" height="50">
+              <img v-if="scope.row.picPath" :src="scope.row.webPicPath" alt="学生照片" width="50" height="50">
               <el-tag type="info" v-else>暂无照片</el-tag>
             </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="userName"
             label="学生姓名"
             align="center"
             header-align="center">
           </el-table-column>
           <el-table-column
-            prop="idcard"
+            prop="cardId"
             label="身份证号码"
             align="center"
             header-align="center">
@@ -66,8 +67,8 @@
             label="当前状态"
             align="center">
             <template slot-scope="scope">
-              <el-tag type="danger" v-if="scope.row.status == 1">注册中</el-tag>
-              <el-tag type="success" v-if="scope.row.status == 0">注册成功</el-tag>
+              <el-tag type="danger" v-if="scope.row.statusStr">{{scope.row.statusStr}}</el-tag>
+              <el-tag type="success" v-else>暂无状态</el-tag>
             </template>
           </el-table-column>
           <el-table-column
@@ -77,7 +78,7 @@
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                @click="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -105,18 +106,18 @@
         :visible.sync="dialogVisible"
         width="30%">
         <div>
-          <el-form ref="form" :model="form" label-width="110px" size="mini">
-            <el-form-item label="学生姓名">
+          <el-form ref="form" :rules="rules" :model="form" label-width="110px" size="mini">
+            <el-form-item label="学生姓名" prop="userName">
               <el-input clearable v-model="form.userName" placeholder="请输入学生姓名"></el-input>
             </el-form-item>
-            <el-form-item label="身份证号码">
+            <el-form-item label="身份证号码" prop="idCard">
               <el-input clearable v-model="form.idCard" placeholder="请输入身份证号码"></el-input>
             </el-form-item>
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button size="mini" @click="cancel">取 消</el-button>
-          <el-button size="mini" type="primary" @click="comfirm">确 定</el-button>
+          <el-button size="mini" type="primary" @click="comfirm('form')">确 定</el-button>
         </span>
       </el-dialog>
       <!--end  单个录入弹出框-->
@@ -140,11 +141,21 @@
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
             pageSize: 10,   //每页显示多少条
-            total: 100,   //总共多少条数据
+            total: null,   //总共多少条数据
             dialogVisible: false,
             form: {
               userName: '',   //学生姓名
               idCard: ''    //身份证号码
+            },
+            rules: {
+              userName: [
+                { required: true, message: '请输入学生姓名', trigger: 'blur' },
+                { min: 2, max: 30, message: '长度在 2 到 30 个字符', trigger: 'blur' }
+              ],
+              idCard: [
+                { required: true, message: '请输入身份证号码', trigger: 'blur' },
+                { min: 1, max: 18, message: '长度在 1 到 18 个字符', trigger: 'blur' }
+              ]
             }
           }
         },
@@ -152,29 +163,98 @@
           window.addEventListener('resize', ()=>{
             this.height = window.innerHeight - 240;
           })
+
+
+          //获取所有注册学生的列表
+          this.getStudetList();
         },
         created(){
           this.height = window.innerHeight - 240;
         },
         methods: {
+          //获取所有注册学生的列表
+          getStudetList(pageSize,pageNum){
+            this.$get('gateUser/getGateUserFormList',{
+                username: this.formInline.txt ? this.formInline.txt : null,
+                pageSize: pageSize ? pageSize : 10,
+                pageNum: pageNum ? pageNum : 1
+            }).then(res=>{
+                if(res.code == 0){
+                  this.tableData = res.data.content;
+                  this.total = res.data.pageinfo.totalElements > 0 ? res.data.pageinfo.totalElements : 0
+                }
+            })
+          },
+
+          //点击搜索
+          search(){
+            this.getStudetList()
+          },
+
           //点击单个录入
           entry(){
             this.dialogVisible = true;
+            this.form.userName = '';
+            this.form.idCard = '';
+          },
+
+          //限制导入数据类型
+          beforeAvatarUpload(file) {
+            /*const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+
+            if (!isJPG && !isPNG) {
+              this.$message.error('上传图片只能是 JPG/PNG 格式!');
+            }
+            if (!isLt2M) {
+              this.$message.error('上传图片大小不能超过 2MB!');
+            }
+            return (isJPG || isPNG) && isLt2M;*/
           },
 
           //清除当前这个学生的信息
-          handleDelete(){
+          handleDelete(row){
+
+            this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+
+              this.$post('gateUser/delStudent',{
+                userId: row.userId
+              }).then(res=>{
+
+                if(res.code === 0){
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.getStudetList()
+                }
+
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
 
           },
 
           //每页显示多少条数据
           handleSizeChange(val) {
             this.pageSize = val;
+            this.getStudetList(val,this.currentPage);
           },
 
           //当前第几页
           handleCurrentChange(val) {
             this.currentPage = val;
+            this.getStudetList(this.pageSize,val);
           },
 
           //点击弹出框取消按钮
@@ -183,8 +263,30 @@
           },
 
           //点击弹出框的确认按钮
-          comfirm(){
-            this.dialogVisible = false;
+          comfirm(formName){
+            //验证表单填写的数据是否合法，合法将新增数据，反之提示
+            this.$refs[formName].validate((valid) => {
+              if (valid) {
+                  this.$post('gateUser/insertStudent',{
+                    name: this.form.userName,
+                    cardId: this.form.idCard
+                  }).then(res=>{
+                    console.log(res)
+                    if(res.code === 0){
+                      this.$message({
+                        type: 'success',
+                        message: '录入成功!'
+                      });
+
+                      this.dialogVisible = false;
+
+                      this.getStudetList()
+                    }
+                  })
+              } else {
+                return false;
+              }
+            });
           }
         }
     }

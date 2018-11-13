@@ -19,14 +19,12 @@
       <div class="setting">
         <el-form size="small" ref="form" :model="form" label-width="100px">
           <el-form-item label="强制退出设置">
-            <!--<el-input v-model="form.stopTime"></el-input>-->
-            <el-input clearable placeholder="请输入时间" type="number" v-model.number="form.stopTime">
+            <el-input clearable placeholder="请输入时间" min="0" type="number" v-model.number="form.stopTime">
               <template slot="append">秒</template>
             </el-input>
           </el-form-item>
           <el-form-item label="广告进入设置">
-            <!--<el-input v-model="form.endTime"></el-input>-->
-            <el-input clearable placeholder="请输入时间" type="number" v-model.number="form.endTime">
+            <el-input clearable placeholder="请输入时间" min="0" type="number" v-model.number="form.endTime">
               <template slot="append">秒</template>
             </el-input>
           </el-form-item>
@@ -52,13 +50,53 @@
             form: {
               stopTime: '',
               endTime: ''
-            }
+            },
+            id: ''
           }
         },
+
+        mounted(){
+          this.getOldConfig();
+        },
+
         methods: {
             //保存基本配置
           onSubmit(){
 
+            if((this.form.endTime && !Number.isInteger(this.form.endTime)) || (this.form.stopTime && !Number.isInteger(this.form.stopTime))){
+              this.$message({
+                message: '请输入正整数',
+                type: 'warning'
+              });
+              return;
+            }
+
+            this.$post('sysConfig/updateSysConfig',{
+              adTime: this.form.endTime,
+              quitTime: this.form.stopTime,
+              id: this.id
+            }).then(res=>{
+              console.log(res)
+                if(res.code == 0){
+                  this.$message({
+                    message: '设置成功',
+                    type: 'success'
+                  });
+                  this.getOldConfig();
+                }
+            })
+          },
+
+          //获取以前的基本配置
+          getOldConfig(){
+            this.$post('sysConfig/getSysConfig',{}).then(res=>{
+              console.log(res)
+              if(res.code === 0){
+                this.form.endTime = res.data.adTime;
+                this.form.stopTime = res.data.quitTime;
+                this.id = res.data.id
+              }
+            })
           }
         }
     }

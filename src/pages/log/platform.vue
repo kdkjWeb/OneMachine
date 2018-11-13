@@ -12,8 +12,7 @@
               size="mini"
               v-model="formInline.startTime"
               type="date"
-              value-format="yyyy-MM-dd"
-              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
@@ -22,8 +21,8 @@
               size="mini"
               v-model="formInline.endTime"
               type="date"
-              value-format="yyyy-MM-dd"
-              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :picker-options="pickerOptionsE"
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
@@ -38,7 +37,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button size="mini" type="primary">搜索</el-button>
+            <el-button size="mini" type="primary" @click="search">搜索</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -111,35 +110,40 @@
               type: ''   //类型
             },
             options: [{
-              value: '选项1',
-              label: '黄金糕'
+              value: '查看',
+              label: '查看'
             }, {
-              value: '选项2',
-              label: '双皮奶'
+              value: '删除',
+              label: '删除'
             }, {
-              value: '选项3',
-              label: '蚵仔煎'
-            }, {
-              value: '选项4',
-              label: '龙须面'
-            }, {
-              value: '选项5',
-              label: '北京烤鸭'
+              value: '添加',
+              label: '添加'
+            },{
+              value: '更新',
+              label: '更新'
             }],
             tableList: [   //表格的头部配置
-              {prop: 'userName', label: '管理员级别'},
-              {prop: 'schoolName', label: '管理员账户'},
-              {prop: 'registerAddress', label: '操作类型'},
-              {prop: 'macAddress', label: '操作模块'},
-              {prop: 'leader', label: '操作时间'},
+              {prop: 'operateLevel', label: '管理员级别'},
+              {prop: 'userName', label: '管理员账户'},
+              {prop: 'operate', label: '操作类型'},
+              {prop: 'moduleName', label: '操作模块'},
+              {prop: 'operateTime', label: '操作时间'},
             ],
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
             pageSize: 10,   //每页显示多少条
-            total: 100,   //总共多少条数据
+            total: null,   //总共多少条数据
+            pickerOptionsE: {
+              disabledDate: (time) => {
+                return time.getTime() < new Date(this.formInline.startTime);
+              }
+            },
           }
         },
         mounted(){
+          //获取平台操作日志列表
+          this.getPlatformLogList();
+
           window.addEventListener('resize', ()=>{
             this.height = window.innerHeight - 240;
           })
@@ -148,14 +152,39 @@
           this.height = window.innerHeight - 240;
         },
         methods: {
+
+          //获取平台操作日志列表
+          getPlatformLogList(pageSize,pageNum){
+            this.$post('smLog/getSmLogFormList',{
+                pageSize: pageSize ? pageSize : 10,
+                pageNum: pageNum ? pageNum : 1,
+                beginTime: this.formInline.startTime ? this.formInline.startTime : null,
+                endTime: this.formInline.endTime ? this.formInline.endTime : null,
+                operate: this.formInline.type ? this.formInline.type : null
+            }).then(res=>{
+                if(res.code === 0){
+                  this.tableData = res.data.content;
+                  this.total = res.data.pageinfo.totalElements > 0 ? res.data.pageinfo.totalElements : 0
+                }
+
+            })
+          },
+
+          //搜索
+          search(){
+            this.getPlatformLogList();
+          },
+
           //每页显示多少条数据
           handleSizeChange(val) {
             this.pageSize = val;
+            this.getPlatformLogList(val,this.currentPage);
           },
 
           //当前第几页
           handleCurrentChange(val) {
             this.currentPage = val;
+            this.getPlatformLogList(this.pageSize,val);
           },
 
           //设置表格索引序号

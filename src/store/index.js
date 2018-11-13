@@ -13,10 +13,10 @@ export default new Vuex.Store({
     getters: {
       getToken: state=>state.token
     },
-  mutations: {
-      setToken(state,data){
-        sessionStorage.token = data;
-        state.token = data;
-      }
-  }
+    mutations: {
+        setToken(state,data){
+          sessionStorage.token = data;
+          state.token = data;
+        }
+    }
 })

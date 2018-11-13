@@ -91,16 +91,17 @@
           this.text = '验证码输入错误'
           return;
         }
-        this.$post('adminLogin',{
-          phone: this.userInfo.userName,
+        this.$post('login',{
+          userName: this.userInfo.userName,
           password: this.userInfo.userPas
         }).then(res=>{
+          console.log(res)
           if(res.code == 0){
             //存放后台返回的用户信息
-            localStorage.setItem('userInfo',JSON.stringify(res.data))
+            // localStorage.setItem('userInfo',JSON.stringify(res.data))
 
             //将返回的token存入store
-            this.$store.commit('setToken',res.data.token)
+            // this.$store.commit('setToken',res.data.token)
 
             // 登录成功跳转首页
             this.$router.push({
