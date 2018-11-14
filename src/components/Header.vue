@@ -6,7 +6,7 @@
     <!-- end logo图片 -->
 
     <!-- start 标题 -->
-    <h1 class="title">渔乐系统管理平台</h1>
+    <h1 class="title">一体机系统管理平台</h1>
     <!-- end 标题 -->
 
     <!-- start 右侧模块 -->
