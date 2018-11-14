@@ -12,13 +12,9 @@ export default {
     {
       path: '/',
       component: resolve => require(['@/components/Home.vue'],resolve),
-      redirect: '/index',
+
       children: [
         {
-          path: '/index',
-          name: 'index',
-          component: resolve => require(['@/pages/Index.vue'],resolve)
-        },{
           path: '/using',
           name: 'using',
           component: resolve => require(['@/pages/account/using'],resolve)

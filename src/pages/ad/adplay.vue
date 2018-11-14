@@ -12,12 +12,17 @@
               <el-button size="mini" type="primary" @click="openBox(2)">创建分组</el-button>
             </el-form-item>
             <el-form-item>
-              <el-select clearable filterable v-model="formInline.type" placeholder="请选择组别">
+              <el-select
+                clearable
+                filterable
+                v-model="formInline.type"
+                placeholder="请选择组别"
+              @change="getAdPlayList">
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.code"
+                  :label="item.text"
+                  :value="item.code">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -57,12 +62,14 @@
               align="center">
               <template slot-scope="scope">
                 <el-button
+                  v-if="scope.row.adStatus == 1"
                   size="mini"
-                  @click="handlePause(scope.$index, scope.row)">暂停</el-button>
+                  @click="handleControl(scope.row,0)">暂停</el-button>
                 <el-button
+                  v-if="scope.row.adStatus == 0"
                   size="mini"
                   type="danger"
-                  @click="handlePlay(scope.$index, scope.row)">播放</el-button>
+                  @click="handleControl(scope.row,1)">播放</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -92,26 +99,26 @@
         :visible.sync="dialogVisible"
         width="30%">
         <div>
-            <el-form ref="form" :model="form" :label-width="labelWidth" size="mini">
+            <el-form ref="form" :rules="rules" :model="form" :label-width="labelWidth" size="mini">
               <!--start 分组设置 0-->
               <div v-if="typeIndex == 0">
-                <el-form-item label="分组选择">
+                <el-form-item label="分组选择" prop="group">
                   <el-select clearable="" v-model="form.group" placeholder="请选择">
                     <el-option
                       v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      :key="item.code"
+                      :label="item.text"
+                      :value="item.code">
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="广告机MAC">
+                <el-form-item label="广告机MAC" prop="mac">
                   <el-select clearable="" v-model="form.mac" placeholder="请选择">
                     <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      v-for="item in options1"
+                      :key="item.code"
+                      :label="item.text"
+                      :value="item.code">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -120,17 +127,17 @@
 
               <!--start 播放时间设置  1-->
               <div v-if="typeIndex == 1">
-                  <el-form-item label="分组选择">
+                  <el-form-item label="分组选择" prop="group">
                     <el-select clearable="" v-model="form.group" placeholder="请选择">
                       <el-option
                         v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        :key="item.code"
+                        :label="item.text"
+                        :value="item.code">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="广告机MAC">
+                  <el-form-item label="广告机MAC" prop="time">
                     <el-input clearable placeholder="请输入时间" type="number" v-model.number="form.time">
                       <template slot="append">秒</template>
                     </el-input>
@@ -140,7 +147,7 @@
 
               <!--start 创建分组 2-->
               <div v-if="typeIndex == 2">
-                  <el-form-item label="组名">
+                  <el-form-item label="组名" prop="createGroup">
                     <el-input clearable v-model="form.createGroup" placeholder="请输入组名"></el-input>
                   </el-form-item>
               </div>
@@ -148,13 +155,13 @@
 
               <!--start 图片设置3-->
               <div v-if="typeIndex == 3">
-                <el-form-item label="分组选择">
+                <el-form-item label="分组选择" prop="group">
                   <el-select clearable="" v-model="form.group" placeholder="请选择">
                     <el-option
                       v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      :key="item.code"
+                      :label="item.text"
+                      :value="item.code">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -163,11 +170,11 @@
             </el-form>
         </div>
         <span slot="footer" class="dialog-footer" v-if="typeIndex === 3">
-          <el-button size="mini" type="primary" @click="next">下 一 步</el-button>
+          <el-button size="mini" type="primary" @click="next('form')">下 一 步</el-button>
         </span>
         <span slot="footer" class="dialog-footer" v-else>
           <el-button size="mini" @click="cancel">取 消</el-button>
-          <el-button size="mini" type="primary" @click="comfirm">确 定</el-button>
+          <el-button size="mini" type="primary" @click="comfirm('form')">确 定</el-button>
         </span>
 
       </el-dialog>
@@ -190,31 +197,17 @@
             labelWidth: '',
             height: null,
             typeIndex: null,   //控制弹出框显示哪一块
-            options: [{
-              value: '选项1',
-              label: '黄金糕'
-            }, {
-              value: '选项2',
-              label: '双皮奶'
-            }, {
-              value: '选项3',
-              label: '蚵仔煎'
-            }, {
-              value: '选项4',
-              label: '龙须面'
-            }, {
-              value: '选项5',
-              label: '北京烤鸭'
-            }],
+            options: [],
+            options1: [],
             formInline: {
               type: ''
             },
             tableList: [   //表格的头部配置
-              {prop: 'userName', label: 'MAC'},
-              {prop: 'schoolName', label: '是否存在分组'},
-              {prop: 'registerAddress', label: '所属分组'},
-              {prop: 'registerAddress', label: '播放间隔时间'},
-              {prop: 'registerAddress', label: '当前状态'},
+              {prop: 'macAddress', label: 'MAC'},
+              {prop: 'esxitGroupStr', label: '是否存在分组'},
+              {prop: 'groupName', label: '所属分组'},
+              {prop: 'intervalTime', label: '播放间隔时间'},
+              {prop: 'adStatusStr', label: '当前状态'},
             ],
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
@@ -226,6 +219,22 @@
               group: '',    //组别筛选
               time: '',   //播放时间
               createGroup: ''   //创建分组
+            },
+            rules: {
+              createGroup: [
+                { required: true, message: '请输入组别名称', trigger: 'blur' },
+                { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
+              ],
+              mac: [
+                { required: true, message: '请选择MAC', trigger: 'blur' },
+              ],
+              group: [
+                { required: true, message: '请选择组别', trigger: 'blur' },
+              ],
+              time: [
+                { required: true, message: '请输入时间', trigger: 'blur' },
+                { pattern: /^[0-9]*$/, message: '请输入数字', trigger: 'blur' }
+              ]
             }
           }
         },
@@ -233,29 +242,85 @@
           window.addEventListener('resize', ()=>{
             this.height = window.innerHeight - 240;
           })
+
+          //获取广告播放设置
+          this.getAdPlayList();
+
+          //获取分组下拉框列表
+          this.getSelectList();
+
+          //获取Mac下拉框列表
+          this.getMacSelectList();
         },
         created(){
           this.height = window.innerHeight - 240;
         },
         methods: {
-            //暂停
-            handlePause(){
 
+
+            //获取广告播放设置列表
+            getAdPlayList(pageSize,pageNum){
+              this.$post('sysGroup/getAdGroupList',{
+                pageSize: pageSize ? pageSize : 10,
+                pageNum: pageNum ? pageNum : 1,
+                adGroupId: this.formInline.type ? this.formInline.type : null
+              }).then(res=>{
+                if(res.code === 0){
+                  this.tableData = res.data.content;
+                  this.total = res.data.pageinfo.totalElements > 0 ? res.data.pageinfo.totalElements : 0
+                }
+
+              })
             },
 
-            //停止
-            handlePlay(){
+            //获取分组下拉框列表
+             getSelectList(){
+                this.$post('sysGroup/selectGroupByCodeTextList',{}).then(res=>{
+                      if(res.code == 0){
+                        this.options = res.data;
+                      }
+                })
+             },
 
+            //获取MAC下拉框列表
+            getMacSelectList(){
+              this.$post('sysAd/selectIsNoExsitGroupAd',{}).then(res=>{
+                if(res.code == 0){
+                  this.options1 = res.data;
+                }
+              })
             },
+
+
+
+            //控制播放暂停
+          handleControl(row,index){
+            this.$post('sysAd/updateSysAdStatus',{
+              id: row.adId,
+              adStatus: index
+            }).then(res=>{
+              if(res.code == 0){
+                this.$message({
+                  type: 'success',
+                  message: '操作成功!'
+                });
+                this.getAdPlayList();
+              }
+            })
+          },
+
+
 
             //每页显示多少条数据
             handleSizeChange(val) {
               this.pageSize = val;
+              this.getAdPlayList(val,this.currentPage);
             },
 
             //当前第几页
             handleCurrentChange(val) {
               this.currentPage = val;
+              this.getAdPlayList(this.pageSize,val);
             },
 
             //打开弹出框
@@ -265,18 +330,24 @@
                   case 0:
                     this.title = '分组设置';
                     this.labelWidth = '100px';
+                    this.form.group = '';
+                    this.form.mac = '';
                     break;
                   case 1:
                     this.title = '播放时间设置';
                     this.labelWidth = '100px';
+                    this.form.group = '';
+                    this.form.time = '';
                     break;
                   case 2:
                     this.title = '创建分组';
                     this.labelWidth = '60px';
+                    this.form.createGroup = '';
                     break;
                   case 3:
                     this.title = '选择分组';
                     this.labelWidth = '100px';
+                    this.form.group = '';
                     break;
                 }
                 this.dialogVisible = true;
@@ -289,15 +360,99 @@
             },
 
             //点击弹出框的确认按钮
-            comfirm(){
-              this.dialogVisible = false;
+            comfirm(formName){
+              //验证表单填写的数据是否合法，合法将新增数据，反之提示
+              this.$refs[formName].validate((valid) => {
+
+                if (valid) {
+                      switch (this.typeIndex) {
+                        case 0:
+                          this.groupSet();
+                          break;
+                        case 1:
+                          this.adPlaySet();
+                          break;
+                        case 2:
+                          this.createGroup();
+                          break;
+                        case 3:
+                          break;
+                      }
+                } else {
+                  return false;
+                }
+              });
+            },
+
+            //创建分组
+            createGroup(){
+              this.$post('sysGroup/addAdGroup',{
+                groupName: this.form.createGroup
+              }).then(res=>{
+                if(res.code === 0){
+                  this.$message({
+                    type: 'success',
+                    message: '创建分组成功!'
+                  });
+                  this.dialogVisible = false;
+                  this.getAdPlayList();
+                }
+              })
+            },
+
+            //分组设置
+            groupSet(){
+              this.$post('sysAd/updateSysAdGroupId',{
+                groupId: this.form.group,
+                id: this.form.mac
+              }).then(res=>{
+                if(res.code === 0){
+                  this.$message({
+                    type: 'success',
+                    message: '分组设置成功!'
+                  });
+                  this.dialogVisible = false;
+                  this.getAdPlayList();
+                }
+
+              })
+            },
+
+            //广告播放设置
+            adPlaySet(){
+              this.$post('sysGroup/updateGroupintervalTime',{
+                id: this.form.group,
+                intervalTime: this.form.time
+              }).then(res=>{
+                if(res.code === 0){
+                  this.$message({
+                    type: 'success',
+                    message: '广告播放时间设置成功!'
+                  });
+                  this.dialogVisible = false;
+                  this.getAdPlayList();
+                }
+              })
             },
 
             //点击弹出框的下一步跳转到图片设置页面
-            next(){
-              this.$router.push({
-                name: 'setimg'
-              })
+            next(formName){
+
+              //验证表单填写的数据是否合法，合法将新增数据，反之提示
+              this.$refs[formName].validate((valid) => {
+
+                if (valid) {
+                  this.$router.push({
+                    name: 'setimg',
+                    query: {
+                      id: this.form.group
+                    }
+                  })
+                } else {
+                  return false;
+                }
+              });
+
             }
         }
     }

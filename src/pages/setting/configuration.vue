@@ -76,7 +76,6 @@
               quitTime: this.form.stopTime,
               id: this.id
             }).then(res=>{
-              console.log(res)
                 if(res.code == 0){
                   this.$message({
                     message: '设置成功',
@@ -90,7 +89,6 @@
           //获取以前的基本配置
           getOldConfig(){
             this.$post('sysConfig/getSysConfig',{}).then(res=>{
-              console.log(res)
               if(res.code === 0){
                 this.form.endTime = res.data.adTime;
                 this.form.stopTime = res.data.quitTime;

@@ -23,8 +23,12 @@
           <div>
             <el-upload
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="`${this.$store.state.updateUrl}gateUser/batchImport`"
+              name="file"
               :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              :on-error="upError"
+              :show-file-list="false"
             >
               <el-button size="mini" type="primary">批量导入</el-button>
             </el-upload>
@@ -200,18 +204,34 @@
 
           //限制导入数据类型
           beforeAvatarUpload(file) {
-            /*const isJPG = file.type === 'image/jpeg';
-            const isPNG = file.type === 'image/png';
-            const isLt2M = file.size / 1024 / 1024 < 2;
 
 
-            if (!isJPG && !isPNG) {
-              this.$message.error('上传图片只能是 JPG/PNG 格式!');
+
+            const isExcel = file.name.includes('.xlsx')
+
+            if (!isExcel) {
+              this.$message.error('上传文件只能是 excel 最新版本!');
             }
-            if (!isLt2M) {
-              this.$message.error('上传图片大小不能超过 2MB!');
+
+            return isExcel;
+
+          },
+
+          handleAvatarSuccess(res, file, fileList) {
+            if(res.code == 0){
+              this.$message({
+                type: 'success',
+                message: '导入文件成功!'
+              });
+              this.getStudetList()
             }
-            return (isJPG || isPNG) && isLt2M;*/
+          },
+
+          //上传文件失败
+          upError(err){
+            if(err){
+              this.$message.error('导入文件失败');
+            }
           },
 
           //清除当前这个学生的信息
@@ -271,7 +291,6 @@
                     name: this.form.userName,
                     cardId: this.form.idCard
                   }).then(res=>{
-                    console.log(res)
                     if(res.code === 0){
                       this.$message({
                         type: 'success',

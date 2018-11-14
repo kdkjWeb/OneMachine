@@ -95,18 +95,31 @@
           userName: this.userInfo.userName,
           password: this.userInfo.userPas
         }).then(res=>{
-          console.log(res)
           if(res.code == 0){
+
+
+            //存放后台返回数据
+            sessionStorage.setItem('userInfo',JSON.stringify(res.user))
+
+
             //存放后台返回的用户信息
             // localStorage.setItem('userInfo',JSON.stringify(res.data))
 
             //将返回的token存入store
-            // this.$store.commit('setToken',res.data.token)
+            this.$store.commit('setToken',res.user.password)
 
-            // 登录成功跳转首页
-            this.$router.push({
-              path: '/'
-            })
+            if(res.user.role == 0){
+              // 登录成功跳转首页
+              this.$router.push({
+                path: '/student'
+              })
+            }else{
+              // 登录成功跳转首页
+              this.$router.push({
+                path: '/using'
+              })
+            }
+
           }else{
             this.verification = ''
             this.show = false
@@ -134,6 +147,7 @@
     margin: 0 auto;
     background-image: url(../assets/images/logo.png);
     background-repeat: no-repeat;
+    background-position: 0 30px;
   }
   .loginWrap{
     width: 100%;

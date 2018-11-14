@@ -2,9 +2,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';;
 Vue.use(Vuex)
 
+//配置API接口地址
+const API_ROOT = process.env.API_ROOT;
 
 const state = {
-  token: ''
+  token: '',
+  updateUrl: API_ROOT
 }
 
 

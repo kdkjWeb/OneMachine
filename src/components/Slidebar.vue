@@ -8,7 +8,7 @@
     <!-- end菜单栏是否折叠按钮 -->
 
     <!-- start菜单栏 -->
-    <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" :collapse="collapse" :collapse-transition="false" router  background-color="#42475b" text-color="#fff">
+    <el-menu :unique-opened="true" :default-active="onRoutes" class="el-menu-vertical-demo" :collapse="collapse" :collapse-transition="false" router  background-color="#42475b" text-color="#fff">
       <template v-for="item in routerItem">
         <template v-if="item.subs">
           <el-submenu :index="item.index" :key="item.index">
@@ -117,6 +117,30 @@
         this.collapse = !this.collapse;
         bus.$emit('collapse', this.collapse)
       }
+    },
+    mounted(){
+      let user = JSON.parse(sessionStorage.getItem('userInfo'))
+
+
+      if(user.role === 0){
+        this.routerItem = [
+          {
+            icon: 'icon-fuwuzhuce',
+            index: 'index1',
+            title: '注册管理',
+            subs: [
+              {
+                index: 'student',
+                title: '学生注册'
+              },{
+                index: 'visitor',
+                title: '访客登记'
+              }
+            ]
+          }
+        ]
+      }
+
     }
   }
 </script>

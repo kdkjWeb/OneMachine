@@ -27,7 +27,7 @@ import TopNav from "./components/TopNav";
 Vue.component('TopNav',TopNav);
 
 //路由拦截
-/*router.beforeEach((to,from,next)=>{
+router.beforeEach((to,from,next)=>{
   if(to.path === '/login'){
     next();
   }else {
@@ -39,7 +39,7 @@ Vue.component('TopNav',TopNav);
       })
     }
   }
-})*/
+})
 
 /* eslint-disable no-new */
 new Vue({

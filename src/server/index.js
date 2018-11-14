@@ -6,6 +6,7 @@
 
 import Axios from 'axios';
 import store from "../store/index";
+import { Message, Loading } from 'element-ui';
 
 //配置API接口地址
 const API_ROOT = process.env.API_ROOT;
@@ -35,9 +36,25 @@ Axios.interceptors.response.use(
     return response;
   },err=>{
     if(err.response){
-      switch (err.response.status === 401) {
-
+      switch (err.response.status) {
+        case 401:
+          Message({
+            message: err.response.data.msg,
+            type: 'warning'
+          })
+        break;
+        case 503:
+          Message({
+            message: '服务器异常，请联系管理员',
+            type: 'warning'
+          })
+          break;
       }
+    }else{
+      Message({
+        message: '服务器异常，请联系管理员',
+        type: 'warning'
+      })
     }
     return Promise.reject(err.response.data)
   }
@@ -59,7 +76,16 @@ Axios.interceptors.response.use(
         Axios.get(url,{
           params: params
         }).then(res=>{
-          resolve(res.data)
+          // resolve(res.data)
+          if(res.data.code == 0){
+            resolve(res.data)
+          }else if(res.data.code == 500){
+            Message({
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
+
         }).catch(err=>{
           reject(err)
         })
@@ -76,7 +102,15 @@ Axios.interceptors.response.use(
     post: (url,data = {})=>{
       return new Promise((resolve,reject)=>{
         Axios.post(url,data).then(res=>{
-          resolve(res.data)
+          // resolve(res.data)
+          if(res.data.code == 0){
+            resolve(res.data)
+          }else if(res.data.code == 500){
+            Message({
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
         }).catch(err=>{
           reject(err)
         })
