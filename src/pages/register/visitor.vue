@@ -145,7 +145,7 @@
             nav: {
               icon: 'icon-fuwuzhuce',
               title: ' 注册管理',
-              subtitle: '学生注册'
+              subtitle: '访客登记'
             },
             height: null,
             formInline: {
