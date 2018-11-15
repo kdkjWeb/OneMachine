@@ -50,8 +50,8 @@
             align="center"
             width="100">
             <template slot-scope="scope">
-              <el-tag type="danger" v-if="scope.row.status == 1">在线</el-tag>
-              <el-tag type="success" v-if="scope.row.status == 0">离线</el-tag>
+              <el-tag type="danger" v-if="scope.row.status == 1">注册成功</el-tag>
+              <el-tag type="success" v-if="scope.row.status == 0">未注册</el-tag>
             </template>
           </el-table-column>
           <el-table-column

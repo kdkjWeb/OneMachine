@@ -180,8 +180,9 @@
           getStudetList(pageSize,pageNum){
             this.$get('gateUser/getGateUserFormList',{
                 username: this.formInline.txt ? this.formInline.txt : null,
-                pageSize: pageSize ? pageSize : 10,
-                pageNum: pageNum ? pageNum : 1
+                pageNum: pageNum ? pageNum : 1,
+                pageSize: pageSize ? pageSize : 10
+
             }).then(res=>{
                 if(res.code == 0){
                   this.tableData = res.data.content;

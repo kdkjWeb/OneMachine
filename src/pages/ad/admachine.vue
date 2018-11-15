@@ -32,7 +32,7 @@
             >
             </el-table-column>
             <el-table-column
-              label="当前状态"
+              label="广告机当前状态"
               align="center">
               <template slot-scope="scope">
                 <el-tag type="danger" v-if="scope.row.status == 1">在线</el-tag>

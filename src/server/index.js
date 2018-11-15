@@ -18,12 +18,12 @@ Axios.defaults.withCredentials = true;
 //http request 拦截器
 Axios.interceptors.request.use(
   config =>{
-    if(store.state.token){   //判断token是否存在，如果存在，则在所有请求头上面添加token
+    /*if(store.state.token){   //判断token是否存在，如果存在，则在所有请求头上面添加token
 
       //   config.headers.Authorization = `token ${store.state.token}`;
 
       config.headers['token'] = store.state.token;  //请求头设置token
-    }
+    }*/
     return config;
   },err=>{
     return Promise.reject(err)

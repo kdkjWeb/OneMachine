@@ -38,7 +38,11 @@
             <template slot-scope="scope">
               <el-tag type="danger" v-if="scope.row.authorityLevel == 0">一体机</el-tag>
               <el-tag type="success" v-if="scope.row.authorityLevel == 1">管理端</el-tag>
-              <el-tag type="warning" v-if="scope.row.authorityLevel == 2">一体加管理端</el-tag>
+              <div v-if="scope.row.authorityLevel == 2">
+                <el-tag type="danger">注册机管理</el-tag>
+                <el-tag type="success">后台注册管理</el-tag>
+              </div>
+              <!--<el-tag type="warning" v-if="scope.row.authorityLevel == 2">一体加管理端</el-tag>-->
             </template>
           </el-table-column>
           <el-table-column

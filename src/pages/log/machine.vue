@@ -106,6 +106,7 @@
             },
             tableList: [   //表格的头部配置
               {prop: 'macAddress', label: 'MAC地址'},
+              {prop: 'registerAddress', label: '注册机地址'},
               {prop: 'operation', label: '操作方式'},
               // {prop: 'macAddress', label: '操作人员级别'},
               {prop: 'operationUser', label: '操作人'},

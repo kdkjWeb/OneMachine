@@ -26,7 +26,7 @@
             <input v-model="userInfo.userPas" class="row_input" type="password" placeholder="请输入您的密码">
           </div>
           <div class="row">
-            <input v-model="userInfo.userCode" class="code" type="text" placeholder="请输入验证码">
+            <input v-model="userInfo.userCode" class="code" type="text" placeholder="请输入验证码" @keyup.enter="login">
             <span class="verification">{{verification}}</span>
           </div>
           <p><a href="#" @click="getRandom">看不清换一张</a></p>
@@ -106,7 +106,7 @@
             // localStorage.setItem('userInfo',JSON.stringify(res.data))
 
             //将返回的token存入store
-            this.$store.commit('setToken',res.user.password)
+            this.$store.commit('setToken',res.user.password)   //这里后台呢没有返回token，我们将密码作为判断
 
             if(res.user.role == 0){
               // 登录成功跳转首页

@@ -23,7 +23,7 @@
               <template slot="append">秒</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="广告进入设置">
+          <el-form-item label="广告时间设置">
             <el-input clearable placeholder="请输入时间" min="0" type="number" v-model.number="form.endTime">
               <template slot="append">秒</template>
             </el-input>
