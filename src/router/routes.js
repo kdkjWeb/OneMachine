@@ -60,6 +60,10 @@ export default {
       path: '/login',
       name: 'Login',
       component: resolve => require(['@/pages/Login'],resolve)
+    },{
+      path: '*',
+      name: '404',
+      component: resolve => require(['@/pages/notFound/404'],resolve)
     }
   ]
 }

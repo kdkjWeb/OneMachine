@@ -45,15 +45,16 @@
             :show-overflow-tooltip="true"
           >
           </el-table-column>
-          <el-table-column
+          <!--<el-table-column
             label="注册状态"
             align="center"
             width="100">
             <template slot-scope="scope">
               <el-tag type="danger" v-if="scope.row.status == 1">注册成功</el-tag>
-              <el-tag type="success" v-if="scope.row.status == 0">未注册</el-tag>
+              <el-tag type="success" v-else-if="scope.row.status == 0">未注册</el-tag>
+              <el-tag type="info" v-else>暂无状态</el-tag>
             </template>
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column
             label="操作"
             align="center">
@@ -211,14 +212,14 @@
         },
         mounted(){
           window.addEventListener('resize', ()=>{
-            this.height = window.innerHeight - 240;
+            this.height = window.innerHeight - 260;
           })
 
           //获取所有访客列表
           this.getVisitorList()
         },
         created(){
-          this.height = window.innerHeight - 240;
+          this.height = window.innerHeight - 260;
         },
         methods: {
 

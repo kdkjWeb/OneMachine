@@ -49,6 +49,7 @@
         methods: {
           /**start上传图片 */
           handleRemove(file, fileList) {
+
             this.$post('file/delFile',{
               id: file.id
             }).then(res=>{
@@ -58,7 +59,7 @@
                   type: 'success',
                   message: '删除成功!'
                 });
-                this.getImgList()
+                // this.getImgList()
               }
 
             })
@@ -68,12 +69,18 @@
             this.dialogVisible = true;
           },
           handleAvatarSuccess(res, file, fileList) {
+
             if(res.code == 0){
               this.$message({
                 type: 'success',
                 message: '上传成功!'
               });
-              this.getImgList()
+
+
+              //为了避免页面重新刷新，将上传成功的file对像替换成res返回的路径和id
+              file.url = res.data.webPath;
+              file.id = res.data.id;
+
             }
           },
           beforeAvatarUpload(file) {
@@ -110,7 +117,6 @@
                   let obj = {};
                   obj.url = e.webPath;
                   obj.id = e.id;
-                  obj.name = e.name;
                   arr.push(obj);
                 })
                 this.fileList = JSON.parse(JSON.stringify(arr));

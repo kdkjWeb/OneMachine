@@ -67,14 +67,14 @@
             align="center"
             header-align="center">
           </el-table-column>
-          <el-table-column
+          <!--<el-table-column
             label="当前状态"
             align="center">
             <template slot-scope="scope">
               <el-tag type="danger" v-if="scope.row.statusStr">{{scope.row.statusStr}}</el-tag>
               <el-tag type="success" v-else>暂无状态</el-tag>
             </template>
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column
             label="操作"
             align="center">
@@ -165,7 +165,7 @@
         },
         mounted(){
           window.addEventListener('resize', ()=>{
-            this.height = window.innerHeight - 240;
+            this.height = window.innerHeight - 260;
           })
 
 
@@ -173,7 +173,7 @@
           this.getStudetList();
         },
         created(){
-          this.height = window.innerHeight - 240;
+          this.height = window.innerHeight - 260;
         },
         methods: {
           //获取所有注册学生的列表

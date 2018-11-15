@@ -145,11 +145,11 @@
           this.getPlatformLogList();
 
           window.addEventListener('resize', ()=>{
-            this.height = window.innerHeight - 240;
+            this.height = window.innerHeight - 260;
           })
         },
         created(){
-          this.height = window.innerHeight - 240;
+          this.height = window.innerHeight - 260;
         },
         methods: {
 

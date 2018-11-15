@@ -38,10 +38,11 @@
               <template slot-scope="scope">
                 <el-tag type="danger" v-if="scope.row.authorityLevel == 0">注册机管理</el-tag>
                 <el-tag type="success" v-if="scope.row.authorityLevel == 1">后台注册管理</el-tag>
-                <div v-if="scope.row.authorityLevel == 2">
+                <el-tag type="waring" v-if="scope.row.authorityLevel == 2">注册机加后台管理</el-tag>
+                <!--<div v-if="scope.row.authorityLevel == 2">
                   <el-tag type="danger">注册机管理</el-tag>
                   <el-tag type="success">后台注册管理</el-tag>
-                </div>
+                </div>-->
               </template>
             </el-table-column>
             <el-table-column

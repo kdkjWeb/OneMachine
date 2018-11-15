@@ -58,6 +58,14 @@
             >
             </el-table-column>
             <el-table-column
+              label="广告机当前状态"
+              align="center">
+              <template slot-scope="scope">
+                <el-tag type="danger" v-if="scope.row.adStatusStr">{{scope.row.adStatusStr}}</el-tag>
+                <el-tag type="info" v-else>暂无状态</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
               label="操作"
               align="center">
               <template slot-scope="scope">
@@ -207,7 +215,7 @@
               {prop: 'esxitGroupStr', label: '是否存在分组'},
               {prop: 'groupName', label: '所属分组'},
               {prop: 'intervalTime', label: '播放间隔时间'},
-              {prop: 'adStatusStr', label: '当前状态'},
+              // {prop: 'adStatusStr', label: '当前状态'},
             ],
             tableData: [],   //表格的数据
             currentPage: 1, //当前第几页
@@ -240,7 +248,7 @@
         },
         mounted(){
           window.addEventListener('resize', ()=>{
-            this.height = window.innerHeight - 240;
+            this.height = window.innerHeight - 260;
           })
 
           //获取广告播放设置
@@ -253,7 +261,7 @@
           this.getMacSelectList();
         },
         created(){
-          this.height = window.innerHeight - 240;
+          this.height = window.innerHeight - 260;
         },
         methods: {
 
