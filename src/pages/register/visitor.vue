@@ -328,9 +328,32 @@
 
           //点击弹出框的确认按钮
           comfirm(formName){
+
             //验证表单填写的数据是否合法，合法将新增数据，反之提示
             this.$refs[formName].validate((valid) => {
               if (valid) {
+
+                  let startTime = Date.parse(new Date(this.form.arriveTime))/1000;
+                  let endTime = Date.parse(new Date(this.form.arriveEndTime)) / 1000;
+
+                  if(startTime >= endTime) {
+                    this.$message({
+                      showClose: true,
+                      message: '到访开始时间不能大于等于结束时间',
+                      type: 'warning'
+                    });
+                    return;
+                  }
+
+                  if (this.form.cardId === this.form.visitCardId) {
+                    this.$message({
+                      showClose: true,
+                      message: '两次输入身份证相同，请确认后重新输入',
+                      type: 'warning'
+                    });
+                    return;
+                  }
+
 
                 let url = this.visitorId ? 'gateVisitor/updateGateVisitor' : 'gateVisitor/insertVisitor';
 
