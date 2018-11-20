@@ -94,7 +94,8 @@
     <el-dialog
       title="新增管理"
       :visible.sync="dialogVisible"
-      width="30%">
+      width="30%"
+      :close-on-click-modal="false">
       <div>
         <el-form ref="form" :rules="rules" :model="form" label-width="110px" size="mini">
           <el-form-item label="用户名" prop="userName">

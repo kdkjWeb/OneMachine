@@ -77,7 +77,8 @@
       <el-dialog
         title="新增一体机"
         :visible.sync="dialogVisible"
-        width="30%">
+        width="30%"
+        :close-on-click-modal="false">
         <div>
           <el-form ref="form" :rules="rules" :model="form" label-width="110px" size="mini">
             <el-form-item label="院校名称" prop="schoolName">

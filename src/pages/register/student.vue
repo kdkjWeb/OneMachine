@@ -23,7 +23,7 @@
           <div>
             <el-upload
               class="upload-demo"
-              :action="`${this.$store.state.updateUrl}gateUser/batchImport`"
+              :action="`${this.$store.state.updateUrl}/gateUser/batchImport`"
               name="file"
               :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
@@ -31,6 +31,20 @@
               :show-file-list="false"
             >
               <el-button size="mini" type="primary">批量导入</el-button>
+            </el-upload>
+          </div>
+          <div>
+            <el-upload
+              class="upload-demo"
+              :action="`${this.$store.state.updateUrl}/gateUser/uploadFolderPichList`"
+              name="files"
+              :before-upload="beforeAvatarUploadFile"
+              :on-success="handleAvatarSuccess"
+              :on-error="upError"
+              :show-file-list="false"
+              :multiple="true"
+            >
+              <el-button size="mini" type="primary">文件夹导入</el-button>
             </el-upload>
           </div>
         </div>
@@ -108,7 +122,8 @@
       <el-dialog
         title="新增学生"
         :visible.sync="dialogVisible"
-        width="30%">
+        width="30%"
+        :close-on-click-modal="false">
         <div>
           <el-form ref="form" :rules="rules" :model="form" label-width="110px" size="mini">
             <el-form-item label="学生姓名" prop="userName">
@@ -235,6 +250,10 @@
             }
           },
 
+          beforeAvatarUploadFile(file){
+            console.log(file)
+          },
+
           //清除当前这个学生的信息
           handleDelete(row){
 
@@ -319,7 +338,7 @@
   justify-content: space-between;
 }
 .student .top_nav .top_nav_right{
-  width: 200px;
+  width: 300px;
   display: inherit;
   justify-content: space-around;
 }

@@ -8,7 +8,7 @@
 
       <!--start 上传图片-->
       <el-upload
-        :action="`${this.$store.state.updateUrl}file/insertFile`"
+        :action="`${this.$store.state.updateUrl}/file/insertFile`"
         list-type="picture-card"
         :data= "{
           parentId: groupId

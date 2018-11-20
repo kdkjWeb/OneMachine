@@ -105,7 +105,8 @@
       <el-dialog
         :title="title"
         :visible.sync="dialogVisible"
-        width="30%">
+        width="30%"
+        :close-on-click-modal="false">
         <div>
             <el-form ref="form" :rules="rules" :model="form" :label-width="labelWidth" size="mini">
               <!--start 分组设置 0-->

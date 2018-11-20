@@ -92,7 +92,8 @@
       <el-dialog
         title="新增访客"
         :visible.sync="dialogVisible"
-        width="30%">
+        width="30%"
+        :close-on-click-modal="false">
         <div>
           <el-form ref="form" :rules="rules" :model="form" label-width="120px" size="mini">
             <el-form-item label="访客姓名" prop="visitorName">
