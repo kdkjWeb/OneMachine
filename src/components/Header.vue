@@ -131,7 +131,7 @@
             this.$get('logout',{}).then(res=>{
 
 
-              if(res.code == 0){
+              if(res.code == 0 || res.code == 1){
                 sessionStorage.removeItem('userInfo');
                 this.$store.commit('setToken',null)
                 this.$router.push({

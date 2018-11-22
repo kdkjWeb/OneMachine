@@ -84,6 +84,11 @@ Axios.interceptors.response.use(
               message: res.data.msg,
               type: 'warning'
             });
+          }else if(res.data.code == 1){
+            Message({
+              message: '登录失效，请重新登录',
+              type: 'warning'
+            });
           }
 
         }).catch(err=>{
@@ -108,6 +113,11 @@ Axios.interceptors.response.use(
           }else if(res.data.code == 500){
             Message({
               message: res.data.msg,
+              type: 'warning'
+            });
+          }else if(res.data.code == 1){
+            Message({
+              message: '登录失效，请重新登录',
               type: 'warning'
             });
           }
