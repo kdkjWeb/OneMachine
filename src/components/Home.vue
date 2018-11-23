@@ -7,7 +7,7 @@
       <vSlidebar></vSlidebar>
 
       <!-- 内容区域 -->
-      <div id="content_wrap" :class="collapse? 'content_collapse' : 'content_box'">
+      <div id="content_wrap" :class="collapse ? 'content_collapse' : 'content_box'">
 
         <!-- 路由内容区域 -->
         <div class="content">
@@ -41,8 +41,15 @@
           bus.$on('collapse', flag=>{
             this.collapse = flag
           })
-
         },
+
+       watch: {
+          $route(to,from){
+            if(to.name != from.name){
+              bus.$emit('isShowSet', false)
+            }
+          }
+       }
     }
 </script>
 

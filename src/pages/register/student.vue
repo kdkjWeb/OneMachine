@@ -21,6 +21,9 @@
             <el-button size="mini" type="primary" @click="entry">单个录入</el-button>
           </div>
           <div>
+            <el-button size="mini" type="primary" @click="downLoad">模板下载</el-button>
+          </div>
+          <div>
             <el-upload
               class="upload-demo"
               :action="`${this.$store.state.updateUrl}/gateUser/batchImport`"
@@ -140,6 +143,7 @@
         </span>
       </el-dialog>
       <!--end  单个录入弹出框-->
+
     </div>
 </template>
 
@@ -218,19 +222,35 @@
             this.form.idCard = '';
           },
 
+          //模板下载
+          downLoad(){
+            location.href = './../../../static/template.xlsx';
+          },
+
           //限制导入数据类型
           beforeAvatarUpload(file) {
-
-
-
             const isExcel = file.name.includes('.xlsx')
 
             if (!isExcel) {
               this.$message.error('上传文件只能是 excel 最新版本!');
             }
-
             return isExcel;
+          },
 
+          beforeAvatarUploadFile(file){
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            // const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG && !isPNG) {
+              this.$message.error('请选择jpg、png图片格式!');
+            }
+            /*if (!isLt2M) {
+              this.$message.error('上传图片大小不能超过 2MB!');
+            }
+            return (isJPG || isPNG) && isLt2M;*/
+
+            return (isJPG || isPNG)
           },
 
           handleAvatarSuccess(res, file, fileList) {
@@ -250,9 +270,7 @@
             }
           },
 
-          beforeAvatarUploadFile(file){
-            console.log(file)
-          },
+
 
           //清除当前这个学生的信息
           handleDelete(row){
@@ -338,7 +356,7 @@
   justify-content: space-between;
 }
 .student .top_nav .top_nav_right{
-  width: 300px;
+  width: 400px;
   display: inherit;
   justify-content: space-around;
 }

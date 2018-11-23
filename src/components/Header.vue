@@ -128,17 +128,26 @@
             this.form.shchoolpas = ''
             break;
           case 2:
-            this.$get('logout',{}).then(res=>{
-
-
-              if(res.code == 0 || res.code == 1){
-                sessionStorage.removeItem('userInfo');
-                this.$store.commit('setToken',null)
-                this.$router.push({
-                  name: 'Login'
-                })
-              }
-            })
+            this.$confirm('此操作将退出该系统, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.$get('logout',{}).then(res=>{
+                if(res.code == 0 || res.code == 1){
+                  sessionStorage.removeItem('userInfo');
+                  this.$store.commit('setToken',null)
+                  this.$router.push({
+                    name: 'Login'
+                  })
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消退出'
+              });
+            });
             break;
         }
       },
@@ -216,6 +225,12 @@
         })
       }
 
+    },
+
+    created(){
+      bus.$on('isShowSet', flag=>{
+        this.show = flag;
+      })
     }
 
   }

@@ -33,6 +33,17 @@ Axios.interceptors.request.use(
 //http response 拦截器
 Axios.interceptors.response.use(
   response=>{
+    if(response.data.code === 1){
+      Message({
+        message: '登录失效，请重新登录',
+        type: 'warning'
+      });
+      sessionStorage.removeItem('userInfo');
+      store.commit('setToken',null)
+      router.replace({
+        path: 'login'
+      })
+    }
     return response;
   },err=>{
     if(err.response){
@@ -84,11 +95,6 @@ Axios.interceptors.response.use(
               message: res.data.msg,
               type: 'warning'
             });
-          }else if(res.data.code == 1){
-            Message({
-              message: '登录失效，请重新登录',
-              type: 'warning'
-            });
           }
 
         }).catch(err=>{
@@ -113,11 +119,6 @@ Axios.interceptors.response.use(
           }else if(res.data.code == 500){
             Message({
               message: res.data.msg,
-              type: 'warning'
-            });
-          }else if(res.data.code == 1){
-            Message({
-              message: '登录失效，请重新登录',
               type: 'warning'
             });
           }
