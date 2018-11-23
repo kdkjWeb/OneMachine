@@ -111,20 +111,20 @@
             <el-form ref="form" :rules="rules" :model="form" :label-width="labelWidth" size="mini">
               <!--start 分组设置 0-->
               <div v-if="typeIndex == 0">
-                <el-form-item label="分组选择" prop="group">
-                  <el-select clearable="" v-model="form.group" placeholder="请选择">
+                <el-form-item label="广告机MAC" prop="mac">
+                  <el-select clearable="" v-model="form.mac" @change="chooseMac(form.mac)" placeholder="请选择">
                     <el-option
-                      v-for="item in options"
+                      v-for="item in options1"
                       :key="item.code"
                       :label="item.text"
                       :value="item.code">
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="广告机MAC" prop="mac">
-                  <el-select clearable="" v-model="form.mac" placeholder="请选择">
+                <el-form-item label="分组选择" prop="group">
+                  <el-select clearable="" v-model="form.group" placeholder="请选择">
                     <el-option
-                      v-for="item in options1"
+                      v-for="item in options"
                       :key="item.code"
                       :label="item.text"
                       :value="item.code">
@@ -300,7 +300,16 @@
               })
             },
 
-
+          //选择广告机查看当前广告机是否存在分组
+          chooseMac(val){
+            this.$get('/sysAd/getAdGroupId',{
+              id: val
+            }).then(res=>{
+              if(res.code == 0){
+                this.form.group = res.data;
+              }
+            })
+          },
 
             //控制播放暂停
           handleControl(row,index){

@@ -7,6 +7,7 @@
 import Axios from 'axios';
 import store from "../store/index";
 import { Message, Loading } from 'element-ui';
+import router from '../router/index'
 
 //配置API接口地址
 const API_ROOT = process.env.API_ROOT;
@@ -29,20 +30,27 @@ Axios.interceptors.request.use(
     return Promise.reject(err)
   }
 )
-
+let that = this;
 //http response 拦截器
 Axios.interceptors.response.use(
+
   response=>{
     if(response.data.code === 1){
-      Message({
-        message: '登录失效，请重新登录',
-        type: 'warning'
-      });
+
       sessionStorage.removeItem('userInfo');
       store.commit('setToken',null)
-      router.replace({
-        path: 'login'
-      })
+      Message({
+        message: '登陆失效，请重新登陆',
+        type: 'warning'
+      });
+      setTimeout(()=>{
+        router.push({
+          name: 'login'
+        })
+      },1500)
+      // $router.replace({
+      //   path: 'login'
+      // })
     }
     return response;
   },err=>{

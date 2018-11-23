@@ -224,7 +224,12 @@
 
           //模板下载
           downLoad(){
-            location.href = './../../../static/template.xlsx';
+            this.$get('/file/downFile',{}).then(res=>{
+              console.log(res)
+              if(res.code == 0){
+                location.href = res.data;
+              }
+            })
           },
 
           //限制导入数据类型
