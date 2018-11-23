@@ -19,9 +19,9 @@
             <ul class="down_list" v-if="show">
               <!--<li v-for="(item,index) in userList" :key="index"  @click="downClick(index)"><span class="iconfont" :class="item.icon"></span><a href="#">{{item.title}}</a></li>-->
 
-              <li @click="downClick(0)"><span class="iconfont icon-mima1"></span><a href="#">修改密码</a></li>
-              <li v-if="user.role === 2" @click="downClick(1)"><span class="iconfont icon-shezhi1"></span><a href="#">学校账号管理</a></li>
-              <li @click="downClick(2)"><span class="iconfont icon-unie044"></span><a href="#">安全退出</a></li>
+              <li @click="downClick(0)"><span class="iconfont icon-mima1"></span><a href="javascript:;">修改密码</a></li>
+              <li v-if="user.role === 2" @click="downClick(1)"><span class="iconfont icon-shezhi1"></span><a href="javascript:;">学校账号管理</a></li>
+              <li @click.stop="downClick(2)"><span class="iconfont icon-unie044"></span><a href="javascript:;">安全退出</a></li>
             </ul>
           </transition>
         </div>
