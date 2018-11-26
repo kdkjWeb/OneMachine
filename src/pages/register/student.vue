@@ -214,7 +214,7 @@
 
           //点击搜索
           search(){
-            this.getStudetList()
+            this.getStudetList(this.pageSize,1)
           },
 
           //点击单个录入

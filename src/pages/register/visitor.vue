@@ -57,7 +57,8 @@
           </el-table-column>-->
           <el-table-column
             label="操作"
-            align="center">
+            align="center"
+          width="150">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -153,12 +154,12 @@
               txt: ''
             },
             tableList: [   //表格的头部配置
-              {prop: 'visitorName', label: '访客姓名',width: '120'},
-              {prop: 'cardId', label: '访客身份证号',width: '120'},
+              {prop: 'visitorName', label: '访客姓名',width: '150'},
+              {prop: 'cardId', label: '访客身份证号',width: ''},
               {prop: 'arriveTime', label: '到访时间',width: '160'},
               {prop: 'arriveEndTime', label: '到访结束时间',width: '160'},
-              {prop: 'visitUserName', label: '被访者姓名',width: '120'},
-              {prop: 'visitCardId', label: '被访者身份证号',width: '120'},
+              {prop: 'visitUserName', label: '被访者姓名',width: '150'},
+              {prop: 'visitCardId', label: '被访者身份证号',width: ''},
               {prop: 'modifyTime', label: '录入时间',width: '160'},
             ],
             tableData: [],   //表格的数据
@@ -240,7 +241,7 @@
 
           //搜索
           search(){
-            this.getVisitorList()
+            this.getVisitorList(this.pageSize,1)
           },
 
           //点击单个录入

@@ -26,7 +26,7 @@
               placeholder="请选择日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="注册机选择">
+          <el-form-item label="MAC选择">
 
             <el-input clearable v-model="formInline.type" placeholder="请输入注册机"></el-input>
 
@@ -145,7 +145,7 @@
             this.$post('gateLog/getGateFormList',{
               pageSize: pageSize ? pageSize : 10,
               pageNum: pageNum ? pageNum : 1,
-              beginTime: this.formInline.startTime ? this.formInline.startTime : null,
+              benginTime: this.formInline.startTime ? this.formInline.startTime : null,
               endTime: this.formInline.endTime ? this.formInline.endTime : null,
               macAddress: this.formInline.type ? this.formInline.type : null
             }).then(res=>{
@@ -159,7 +159,7 @@
 
           //搜索
           search(){
-            this.getMachineLogList()
+            this.getMachineLogList(this.pageSize,1)
           },
 
 

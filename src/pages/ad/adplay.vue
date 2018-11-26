@@ -284,7 +284,7 @@
 
             //下拉框查询
             getAdList(){
-                this.getAdPlayList()
+                this.getAdPlayList(this.pageSize,1)
             },
 
             //获取分组下拉框列表

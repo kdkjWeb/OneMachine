@@ -172,13 +172,15 @@
 
           //搜索
           search(){
-            this.getPlatformLogList();
+            this.getPlatformLogList(this.pageSize,1);
           },
 
           //每页显示多少条数据
           handleSizeChange(val) {
             this.pageSize = val;
             this.getPlatformLogList(val,this.currentPage);
+
+            console.log(this.pageSize)
           },
 
           //当前第几页
