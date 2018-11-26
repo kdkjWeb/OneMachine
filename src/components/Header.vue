@@ -176,9 +176,16 @@
                 if(res.code == 0){
                   this.$message({
                     type: 'success',
-                    message: '修改成功!'
+                    message: '修改成功,即将为您重新登陆!'
                   });
                   this.dialogVisible = false;
+
+                  setTimeout(()=>{
+                    this.$router.push({
+                      name: 'Login'
+                    })
+                  },1500)
+
                 }else if(res.code === 500){
                   this.$message({
                     message: res.msg,

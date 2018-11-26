@@ -17,7 +17,7 @@
                 filterable
                 v-model="formInline.type"
                 placeholder="请选择组别"
-              @change="getAdPlayList">
+                @change="getAdList">
                 <el-option
                   v-for="item in options"
                   :key="item.code"
@@ -280,6 +280,11 @@
                 }
 
               })
+            },
+
+            //下拉框查询
+            getAdList(){
+                this.getAdPlayList()
             },
 
             //获取分组下拉框列表

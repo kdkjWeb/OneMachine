@@ -47,7 +47,7 @@
               :show-file-list="false"
               :multiple="true"
             >
-              <el-button size="mini" type="primary">文件夹导入</el-button>
+              <el-button size="mini" type="primary">图片导入</el-button>
             </el-upload>
           </div>
         </div>
@@ -68,7 +68,9 @@
             label="照片"
             align="center">
             <template slot-scope="scope">
-              <img v-if="scope.row.picPath" :src="scope.row.webPicPath" alt="学生照片" width="50" height="50">
+              <div class="header_img" v-if="scope.row.picPath" >
+                <img :src="scope.row.webPicPath" alt="学生照片" width="50" height="50">
+              </div>
               <el-tag type="info" v-else>暂无照片</el-tag>
             </template>
           </el-table-column>
@@ -365,7 +367,11 @@
   display: inherit;
   justify-content: space-around;
 }
-
+.header_img{
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+}
 
 
 </style>
