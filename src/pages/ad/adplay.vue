@@ -284,7 +284,8 @@
 
             //下拉框查询
             getAdList(){
-                this.getAdPlayList(this.pageSize,1)
+                this.getAdPlayList(this.pageSize,1);
+                this.currentPage = 1;
             },
 
             //获取分组下拉框列表
@@ -327,7 +328,7 @@
                   type: 'success',
                   message: '操作成功!'
                 });
-                this.getAdPlayList();
+                this.getAdPlayList(this.pageSize,this.currentPage);
               }
             })
           },
@@ -418,7 +419,7 @@
                     message: '创建分组成功!'
                   });
                   this.dialogVisible = false;
-                  this.getAdPlayList();
+                  this.getAdPlayList(this.pageSize,this.currentPage);
                 }
               })
             },
@@ -435,7 +436,7 @@
                     message: '分组设置成功!'
                   });
                   this.dialogVisible = false;
-                  this.getAdPlayList();
+                  this.getAdPlayList(this.pageSize,this.currentPage);
                 }
 
               })
@@ -453,7 +454,7 @@
                     message: '广告播放时间设置成功!'
                   });
                   this.dialogVisible = false;
-                  this.getAdPlayList();
+                  this.getAdPlayList(this.pageSize,this.currentPage);
                 }
               })
             },

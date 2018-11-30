@@ -216,7 +216,7 @@
                     type: 'success',
                     message: '删除成功!'
                   });
-                  this.getMachAdList()
+                  this.getMachAdList(this.pageSize,this.currentPage);
                 }
 
               })
@@ -269,7 +269,7 @@
 
                     this.dialogVisible = false;
 
-                    this.getMachAdList()
+                    this.macId ? this.getMachAdList(this.pageSize,this.currentPage) : this.getMachAdList(this.pageSize,1);
                   }
                 })
               } else {

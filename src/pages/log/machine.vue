@@ -159,7 +159,8 @@
 
           //搜索
           search(){
-            this.getMachineLogList(this.pageSize,1)
+            this.getMachineLogList(this.pageSize,1);
+            this.currentPage = 1;
           },
 
 

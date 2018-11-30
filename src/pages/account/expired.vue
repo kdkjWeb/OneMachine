@@ -321,7 +321,7 @@
                 type: 'success',
                 message: '删除成功!'
               });
-              this.getOldUserList()
+              this.getOldUserList(this.pageSize,this.currentPage);
             }
 
           })
@@ -386,7 +386,7 @@
 
                 this.dialogVisible = false;
 
-                this.getOldUserList()
+                this.getOldUserList(this.pageSize,this.currentPage);
               }
             })
           } else {

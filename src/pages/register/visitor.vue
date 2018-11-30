@@ -10,7 +10,7 @@
         <div class="top_nav_left">
           <el-form :inline="true" :model="formInline" class="demo-form-inline" size="mini">
             <el-form-item>
-              <el-input clearable v-model="formInline.txt" placeholder="请输入姓名"></el-input>
+              <el-input clearable v-model="formInline.txt" placeholder="请输入访客姓名"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" @click="search">搜索</el-button>
@@ -241,7 +241,8 @@
 
           //搜索
           search(){
-            this.getVisitorList(this.pageSize,1)
+            this.getVisitorList(this.pageSize,1);
+            this.currentPage = 1;
           },
 
           //点击单个录入
@@ -297,7 +298,7 @@
                     type: 'success',
                     message: '删除成功!'
                   });
-                  this.getVisitorList()
+                  this.getVisitorList(this.pageSize,this.currentPage)
                 }
 
               })
@@ -376,7 +377,7 @@
 
                     this.dialogVisible = false;
 
-                    this.getVisitorList()
+                    this.visitorId ? this.getVisitorList(this.pageSize,this.currentPage) : this.getVisitorList(this.pageSize,1)
                   }
                 })
               } else {

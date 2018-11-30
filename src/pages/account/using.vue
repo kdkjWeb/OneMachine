@@ -320,7 +320,7 @@
                     type: 'success',
                     message: '删除成功!'
                   });
-                  this.getUseringList()
+                  this.getUseringList(this.pageSize,this.currentPage);
                 }
 
               })
@@ -396,7 +396,7 @@
 
                     this.dialogVisible = false;
 
-                    this.getUseringList()
+                    this.userId ? this.getUseringList(this.pageSize,this.currentPage) : this.getUseringList(this.pageSize,1);
                   }
                 })
               } else {

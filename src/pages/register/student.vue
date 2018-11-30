@@ -191,7 +191,7 @@
 
 
           //获取所有注册学生的列表
-          this.getStudetList();
+          this.getStudetList()
         },
         created(){
           this.height = window.innerHeight - 260;
@@ -214,7 +214,8 @@
 
           //点击搜索
           search(){
-            this.getStudetList(this.pageSize,1)
+            this.getStudetList(this.pageSize,1);
+            this.currentPage = 1;
           },
 
           //点击单个录入
@@ -266,7 +267,7 @@
                 type: 'success',
                 message: '导入文件成功!'
               });
-              this.getStudetList()
+              this.getStudetList(this.pageSize,1)
             }
           },
 
@@ -297,7 +298,7 @@
                     type: 'success',
                     message: '删除成功!'
                   });
-                  this.getStudetList()
+                  this.getStudetList(this.pageSize,this.currentPage)
                 }
 
               })
@@ -344,7 +345,7 @@
 
                       this.dialogVisible = false;
 
-                      this.getStudetList()
+                      this.getStudetList(this.pageSize,1)
                     }
                   })
               } else {
